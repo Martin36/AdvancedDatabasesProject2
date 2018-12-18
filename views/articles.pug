@@ -1,0 +1,19 @@
+extends layout
+
+block content
+
+  if articles.length
+    table.listing-table.table-dark.table-striped
+      tr
+        th Title
+        th Publication
+        th Author
+        th Date
+      each article in articles
+        tr
+          td= article.title
+          td= article.publication
+          td= article.author
+          td= article.date
+  else
+    p No articles found

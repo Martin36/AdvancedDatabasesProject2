@@ -5,9 +5,14 @@ const { body, validationResult } = require('express-validator/check');
 const router = express.Router();
 const Registration = mongoose.model('Registration');
 
+const connection = mongoose.connection;
 
 router.get('/', (req, res) => {
-  res.render('form', {title: "Registration form" });
+  connection.db.collection('articles', (err, collection) => {
+    collection.find({}).limit(10).toArray((err, articles) => {
+      res.render('articles', {title: "Articles", articles});
+    })
+  })      
 });
 
 router.get('/registrations', (req, res) => {
@@ -45,3 +50,10 @@ router.post('/',
   });
 
 module.exports = router;
+
+
+function find (name, query, cb) {
+    mongoose.connection.db.collection(name, function (err, collection) {
+       collection.find(query).toArray(cb);
+   });
+}
