@@ -12,7 +12,7 @@ router.get('/', (req, res) => {
     collection.find({}).limit(10).toArray((err, articles) => {
       res.render('articles', {title: "Articles", articles});
     })
-  })      
+  })
 });
 
 router.get('/registrations', (req, res) => {
