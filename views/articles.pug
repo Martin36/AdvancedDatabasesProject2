@@ -3,17 +3,14 @@ extends layout
 block content
 
   if articles.length
-    table.listing-table.table-dark.table-striped
-      tr
-        th Title
-        th Publication
-        th Author
-        th Date
+    div.articles-container
       each article in articles
-        tr
-          td= article.title
-          td= article.publication
-          td= article.author
-          td= article.date
+        div.article
+          div.left
+            h2.title= article.title
+            p.text= article.content
+            p.author= article.author
+          div.right
+            img(src=article.imgSrc)
   else
     p No articles found

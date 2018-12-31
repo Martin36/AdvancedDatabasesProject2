@@ -58,3 +58,21 @@ body {
 .listing-table th:first-child {
   border-right: 1px solid #666;
 }
+
+.articles-container {
+  width: 70%;
+  margin: auto;
+}
+.article {
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
+  margin-bottom: 30px;
+}
+.article h2.title {
+}
+.article p.text {
+}
+.article img {
+  max-width: 300px;
+}

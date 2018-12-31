@@ -9,7 +9,12 @@ const connection = mongoose.connection;
 
 router.get('/', (req, res) => {
   connection.db.collection('articles', (err, collection) => {
-    collection.find({}).limit(10).toArray((err, articles) => {
+    collection.find({}).sort({date: -1}).limit(10).toArray((err, articles) => {
+      articles.forEach((article) => {
+        var encodedSource = article.img[0].data.toString('base64');
+        var imgSrc = 'data:' + article.img[0].contentType + ';base64,' + encodedSource;
+        article.imgSrc = imgSrc;
+      })
       res.render('articles', {title: "Articles", articles});
     })
   })
