@@ -76,3 +76,20 @@ body {
 .article img {
   max-width: 300px;
 }
+
+.comments-container {
+  margin-top: 30px;
+  margin-bottom: 50px;
+}
+.comments-container .comment-text {
+  margin-bottom: 0;
+
+}
+.comments-container .date {
+  font-size: 12px;
+  color: #777;
+}
+.comments-container .comment {
+  margin-top: 10px;
+  border-bottom: 1px solid #999;
+}

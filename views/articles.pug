@@ -12,5 +12,18 @@ block content
             p.author= article.author
           div.right
             img(src=article.imgSrc)
+        div.comments-container
+          h5= 'Comments'
+          div.comment-input
+            form(method='post' action='/addcomment')
+              input(type='hidden' name='id' value=article._id)
+              input(type='input' name='comment' placeholder='Comment this article...')
+              input(type='submit' value='Post')
+          if article.comments != undefined
+            each comment in article.comments
+              div.comment
+                p.comment-text= comment.comment
+                span.date= comment.date.toLocaleDateString('en-US', {day: 'numeric', month: 'short', year: 'numeric', hour: 'numeric', minute: 'numeric'})
+          
   else
     p No articles found

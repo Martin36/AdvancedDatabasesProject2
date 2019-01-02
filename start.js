@@ -1,9 +1,10 @@
 require('dotenv').config();
 require('./models/Registration');
+require('./models/Comment');
 const app = require('./app');
 const mongoose = require('mongoose');
 
-mongoose.connect(process.env.DATABASE);
+mongoose.connect(process.env.DATABASE, {useNewUrlParser: true});
 mongoose.Promise = global.Promise;
 mongoose.connection
   .on('connected', () => {
