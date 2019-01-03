@@ -52,14 +52,8 @@ router.get('/comments', (req, res) => {
     return comments;
   }
 
-  // var result = reduceFunction("myId", testArray);
-  // console.log("Results:", result);
-
   connection.db.collection('articles', (err, collection) => {
     if(err) throw err;
-    // collection.findOne({_id: ObjectId('5c17d4462e9d2b4eca1c952b')}).then((doc) => {
-    //   mapFunction.apply(doc);
-    // });
 
     collection.mapReduce(mapFunction, reduceFunction, {out: 'total_comments'}).then(() => {
       connection.db.collection('total_comments', (err, collection) => {

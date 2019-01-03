@@ -1,0 +1,45 @@
+Task 1
+db.dvdrent.mapReduce(
+   `function() {
+     var key = {
+       staf: this.staff.first_name + " " + this.staff.last_name
+     }
+     var value = {
+       films: [
+         {
+           film_title: this.film.title,
+           amount: this.payment == null ? 0 : this.payment.amount
+         }
+       ]
+     }
+
+     emit(key, value);
+   };`,
+   	`function(key, values) {
+          var filmsArray = [];
+          values.forEach((value) => {
+            filmsArray.push(value.films[0]);
+          });
+          // Sort the array
+          filmsArray = filmsArray.sort((a,b) => (a.film_title > b.film_title) ? 1 : ((b.film_title > a.film_title) ? -1 : 0))
+          var result = {
+            films: filmsArray
+          };
+          return result;
+   };`,
+   {
+      query: {
+        "staff.first_name": "Larry",
+        "staff.last_name": "Foster",
+        "film.categories": { $elemMatch: {name: "Comedy"}}
+      },
+      finalize: `function(key, reducedObj) {
+        var totAmount = 0;
+        reducedObj.films.forEach((film) => {
+          totAmount += film.amount;
+        });
+        reducedObj.totAmount = parseFloat(totAmount).toFixed(1);
+        return reducedObj;
+      }`
+   }
+);
