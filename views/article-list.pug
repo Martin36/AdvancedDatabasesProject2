@@ -1,0 +1,17 @@
+extends layout
+
+block content
+
+  if articles.length
+    table.table
+      thead
+        tr
+          th= 'Article ID'
+          th= 'Number of comments'
+      tbody
+      each article in articles
+        tr
+          td= article._id
+          td= article.value
+  else
+    p No articles found
