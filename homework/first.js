@@ -7,6 +7,7 @@ mongoose.connect('mongodb://localhost:27017/nmbp', {useNewUrlParser: true});
 mongoose.Promise = global.Promise;
 
 var map = function() {
+  if(this.payment == null) return;
   var key = {
     staf: this.staff.first_name + " " + this.staff.last_name
   }
@@ -25,7 +26,14 @@ var map = function() {
 var reduce = function(key, values) {
     var filmsArray = [];
     values.forEach((value) => {
-      filmsArray.push(value.films[0]);
+      var film = value.films[0];
+      // Check if film already exist in array
+      var index = filmsArray.map(e => e.film_title).indexOf(film.film_title);
+      if(index >= 0)
+        filmsArray[index].amount += film.amount;
+      else
+        filmsArray.push(film);
+
     });
     // Sort the array
     filmsArray = filmsArray.sort((a,b) => (a.film_title > b.film_title) ? 1 : ((b.film_title > a.film_title) ? -1 : 0))
@@ -39,8 +47,9 @@ var finalize = function(key, reducedObj) {
   var totAmount = 0;
   reducedObj.films.forEach((film) => {
     totAmount += film.amount;
+    film.amount = +parseFloat(film.amount).toFixed(2);
   });
-  reducedObj.totAmount = parseFloat(totAmount).toFixed(1);
+  reducedObj.totAmount = +parseFloat(totAmount).toFixed(1);
   return reducedObj;
 }
 

@@ -1,6 +1,7 @@
 Task 1
 db.dvdrent.mapReduce(
    `function() {
+     if(this.payment == null) return;
      var key = {
        staf: this.staff.first_name + " " + this.staff.last_name
      }
@@ -16,17 +17,24 @@ db.dvdrent.mapReduce(
      emit(key, value);
    };`,
    	`function(key, values) {
-          var filmsArray = [];
-          values.forEach((value) => {
-            filmsArray.push(value.films[0]);
-          });
-          // Sort the array
-          filmsArray = filmsArray.sort((a,b) => (a.film_title > b.film_title) ? 1 : ((b.film_title > a.film_title) ? -1 : 0))
-          var result = {
-            films: filmsArray
-          };
-          return result;
-   };`,
+    var filmsArray = [];
+    values.forEach((value) => {
+      var film = value.films[0];
+      // Check if film already exist in array
+      var index = filmsArray.map(e => e.film_title).indexOf(film.film_title);
+      if(index >= 0)
+        filmsArray[index].amount += film.amount;
+      else
+        filmsArray.push(film);
+
+    });
+    // Sort the array
+    filmsArray = filmsArray.sort((a,b) => (a.film_title > b.film_title) ? 1 : ((b.film_title > a.film_title) ? -1 : 0))
+    var result = {
+      films: filmsArray
+    };
+    return result;
+}`,
    {
       query: {
         "staff.first_name": "Larry",
@@ -34,12 +42,15 @@ db.dvdrent.mapReduce(
         "film.categories": { $elemMatch: {name: "Comedy"}}
       },
       finalize: `function(key, reducedObj) {
-        var totAmount = 0;
-        reducedObj.films.forEach((film) => {
-          totAmount += film.amount;
-        });
-        reducedObj.totAmount = parseFloat(totAmount).toFixed(1);
-        return reducedObj;
-      }`
+  var totAmount = 0;
+  reducedObj.films.forEach((film) => {
+    totAmount += film.amount;
+    film.amount = +parseFloat(film.amount).toFixed(2);
+  });
+  reducedObj.totAmount = +parseFloat(totAmount).toFixed(1);
+  return reducedObj;
+}`
    }
 );
+
+Task 2
